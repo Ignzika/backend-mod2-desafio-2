@@ -47,7 +47,9 @@ app.post("/canciones", (req, res) => {
     const cancion = req.body;
     if (Object.values(cancion).some((value) => value == "")) {
       return (
-        res.status(400).json({ message: "missing input field" }),
+        res
+          .status(400)
+          .json({ message: "missing input field" }),
         console.error("missing input field")
       );
     }
@@ -56,9 +58,12 @@ app.post("/canciones", (req, res) => {
     res.status(201).json(cancion);
     console.log("something... has been added");
   } catch (error) {
-    res.status(500).json({
-      message: "el coso no se puede agregar al cosito que esta en la cosa...", //no aguante el impulso de estupidez
-    });
+    res
+      .status(500)
+      .json({
+        message: "el coso no se puede agregar al cosito que esta en la cosa...", //no aguante el impulso de estupidez
+      })
+      .send("the thing on the thing is not thinging");
     console.error(
       "el coso no se puede agregar al cosito que esta en la cosa..."
     );
@@ -74,7 +79,9 @@ app.put("/canciones/:id", (req, res) => {
 
     if (Object.values(cancion).some((value) => value == "")) {
       return (
-        res.status(400).json({ message: "missing input on edit" }),
+        res
+          .status(400)
+          .json({ message: "missing input on edit" }),
         console.error("missing input on the UPDATE")
       );
     }
@@ -94,7 +101,10 @@ app.put("/canciones/:id", (req, res) => {
 
     res.json(songs[index]);
   } catch (error) {
-    res.status(500).json({ message: "Error al actualizar" });
+    res
+      .status(500)
+      .json({ message: "Error al actualizar" })
+      .send("update not updated");
     console.error("Update failed...");
   }
 });
@@ -109,10 +119,13 @@ app.delete("/canciones/:id", (req, res) => {
 
     fs.writeFileSync("repertorio.json", JSON.stringify(songs));
 
-    res.json({ message: "deleted" });
+    res.json({ message: "deleted song" });
     console.log("Something has been deleted");
   } catch (error) {
-    res.status(500).json({ message: "Something has gone wrong" });
+    res
+      .status(500)
+      .json({ message: "Something has gone wrong" })
+      .send("search for help!");
     console.error("Error on delete, something wasnt deleted...");
   }
 });
