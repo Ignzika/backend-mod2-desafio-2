@@ -1,1 +1,26 @@
-[]
+[
+    {
+        "id": 6604,
+        "titulo": "Ininteligible",
+        "artista": "Robe",
+        "tono": "C"
+    },
+    {
+        "id": 3695,
+        "titulo": "Pedrá",
+        "artista": "Extremoduro",
+        "tono": "A"
+    },
+    {
+        "id": 3227,
+        "titulo": "Fuego",
+        "artista": "Vetusta Morla",
+        "tono": "G♭"
+    },
+    {
+        "id": 7691,
+        "titulo": "Camiseta de Rokanrol",
+        "artista": "Estopa, Fito y Fitipaldis",
+        "tono": "D#"
+    }
+]

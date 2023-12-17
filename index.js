@@ -5,6 +5,7 @@ import cors from "cors";
 // For ES6 modulo
 import path from "path";
 import { fileURLToPath } from "url";
+import { STATUS_CODES } from "http";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -18,9 +19,12 @@ app.use(express.json()); //permite entender el jason
 app.get("/", (req, res) => {
   try {
     res.sendFile(__dirname + "/index.html");
-    res.status(200);
   } catch (error) {
-    res.json({ message: "el recurso no esta disponible" });
+    res
+      .status(500)
+      .json({ message: "el recurso no esta disponible" })
+      .send("algo paso y no es bonito");
+    console.error("something has gone horrible rong");
   }
 });
 
@@ -29,7 +33,11 @@ app.get("/canciones", (req, res) => {
     const songs = JSON.parse(fs.readFileSync("repertorio.json", "utf-8"));
     res.json(songs);
   } catch (error) {
-    res.json({ message: "Cannot READ the jason file" });
+    res
+      .status(400)
+      .json({ message: "Cannot READ the JSON file" })
+      .send("Culpa al BackEnd del error");
+    console.error("Culpa al BackEnd del error");
   }
 });
 
@@ -37,22 +45,23 @@ app.post("/canciones", (req, res) => {
   try {
     const songs = JSON.parse(fs.readFileSync("repertorio.json", "utf-8"));
     const cancion = req.body;
-
     if (Object.values(cancion).some((value) => value == "")) {
       return (
         res.status(400).json({ message: "missing input field" }),
-        console.log("missing input field")
+        console.error("missing input field")
       );
     }
-    console.log(cancion);
     // canciones.push(cancion), mutate...
     fs.writeFileSync("repertorio.json", JSON.stringify([...songs, cancion]));
-    res.send("Added song");
+    res.status(201).json(cancion);
+    console.log("something... has been added");
   } catch (error) {
-    res.json({
-      message:
-        "el coso no esta en el cosito... no aguante el impulso de estupidez",
+    res.status(500).json({
+      message: "el coso no se puede agregar al cosito que esta en la cosa...", //no aguante el impulso de estupidez
     });
+    console.error(
+      "el coso no se puede agregar al cosito que esta en la cosa..."
+    );
   }
 });
 
@@ -63,21 +72,30 @@ app.put("/canciones/:id", (req, res) => {
     const index = songs.findIndex((e) => e.id === Number(id));
     const cancion = req.body;
 
+    if (Object.values(cancion).some((value) => value == "")) {
+      return (
+        res.status(400).json({ message: "missing input on edit" }),
+        console.error("missing input on the UPDATE")
+      );
+    }
     songs[index] = cancion;
 
-    fs.writeFileSync("repertorio.json", JSON.stringify(songs, (id, value) => {
-      if (id === "id") {
-        return Number(value);
-      }
-      return value;
-    }
-    ));
+    fs.writeFileSync(
+      "repertorio.json",
+      JSON.stringify(songs, (id, value) => {
+        if (id === "id") {
+          return Number(value);
+        }
+        return value;
+      })
+    );
 
     console.log(`has been updated`);
 
     res.json(songs[index]);
   } catch (error) {
-    res.json({ message: "Wrong" });
+    res.status(500).json({ message: "Error al actualizar" });
+    console.error("Update failed...");
   }
 });
 
@@ -94,7 +112,8 @@ app.delete("/canciones/:id", (req, res) => {
     res.json({ message: "deleted" });
     console.log("Something has been deleted");
   } catch (error) {
-    res.json({ message: "Something has gone wrong" });
+    res.status(500).json({ message: "Something has gone wrong" });
+    console.error("Error on delete, something wasnt deleted...");
   }
 });
 
