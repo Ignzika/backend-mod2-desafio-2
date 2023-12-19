@@ -12,9 +12,9 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = 3000;
 
-app.use(cors(PORT));
+app.use(cors());// se pasa un array con las url que se les darta acceso app.use(cors([...array aqui...]))
 app.use(morgan("dev"));
-app.use(express.json()); //permite entender el jason
+app.use(express.json()); //permite entender el jason // este es un middlewere
 
 app.get("/", (req, res) => {
   try {
